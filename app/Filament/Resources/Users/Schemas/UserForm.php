@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\Users\Pages\CreateUser;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Schema;
 
 class UserForm
 {
