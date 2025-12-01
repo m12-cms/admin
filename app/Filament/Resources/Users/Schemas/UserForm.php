@@ -29,9 +29,14 @@ class UserForm
                 ->password()
                 ->minLength(8)
                 ->maxLength(255)
-                ->dehydrateStateUsing(function ($state) {
-                    // only hash when a value was provided
-                    return filled($state) ? bcrypt($state) : null;
+                ->dehydrateStateUsing(function ($state): ?string {
+                    // only hash when a non-empty string value was provided
+                    if (! is_string($state) || $state === '') {
+                        return null;
+                    }
+
+                    // bcrypt expects a string
+                    return bcrypt($state);
                 })
                 ->dehydrated(fn ($state) => filled($state))
                 ->required(fn ($livewire) => $livewire instanceof CreateUser),

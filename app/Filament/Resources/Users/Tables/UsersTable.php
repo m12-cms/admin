@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Tables;
 
 use Filament\Tables;
 use Filament\Tables\Table;
+use M12\Models\User;
 
 class UsersTable
 {
@@ -35,7 +36,9 @@ class UsersTable
                     ->label('Deleted')
                     ->dateTime()
                     ->sortable()
-                    ->visible(fn ($record) => $record?->deleted_at !== null),
+                    ->visible(
+                        fn (?User $record): bool => $record?->deleted_at !== null
+                    ),
             ])
 
             ->filters([
