@@ -9,6 +9,11 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.3", "8.4"]
+
     services:
       postgres:
         image: postgres:16
@@ -28,21 +33,49 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ------------------------------------------------------------------
+      # Composer Cache
+      # ------------------------------------------------------------------
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php }}-
+            composer-${{ runner.os }}-
+
+      # ------------------------------------------------------------------
+      # PHP Setup
+      # ------------------------------------------------------------------
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: ${{ matrix.php }}
           extensions: pdo_pgsql, intl, pcntl
           tools: composer
-          coverage: xdebug
+          coverage: none
 
+      # ------------------------------------------------------------------
+      # Install Dependencies
+      # ------------------------------------------------------------------
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      # ------------------------------------------------------------------
+      # Prepare Environment
+      # ------------------------------------------------------------------
       - name: Prepare Environment
         run: |
           cp .env.example .env
           php artisan key:generate
 
+      # ------------------------------------------------------------------
+      # Run Tests
+      # ------------------------------------------------------------------
       - name: Run Tests
         run: php artisan test --colors=always
