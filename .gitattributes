@@ -1,0 +1,23 @@
+* text=auto eol=lf
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+/.github export-ignore
+CHANGELOG.md export-ignore
+.styleci.yml export-ignore
+
+/tests export-ignore
+/.env.example export-ignore
+/phpunit.xml export-ignore
+
+/.vscode export-ignore
+/.idea export-ignore
+
+/package.json export-ignore
+/package-lock.json export-ignore
+/pnpm-lock.yaml export-ignore
+/yarn.lock export-ignore
