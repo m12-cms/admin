@@ -17,6 +17,6 @@ class ListUsersPageTest extends TestCase
     public function test_users_page_loads(): void
     {
         $this->get('/admin/users')
-        ->assertOk();
+            ->assertOk();
     }
 }
